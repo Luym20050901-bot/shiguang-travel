@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>拾光旅栈 - 旅行定制</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif
+        }
+
+        body {
+            background: #f0f7f9;
+            color: #33474d
+        }
+
+        /* 导航栏：和首页一致，定制页标为活跃 */
+        .header {
+            background: #4fb8c8;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 12px rgba(79, 184, 200, 0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            transition: 0.3s;
+            padding: 5px 0
+        }
+
+        .nav a:hover {
+            color: #d5f0f5;
+            border-bottom: 2px solid #fff
+        }
+
+        .nav a.active {
+            color: #fff;
+            border-bottom: 2px solid #fff
+        }
+
+        /* 按钮样式：和首页一致 */
+        .btn {
+            padding: 11px 22px;
+            background: #38a0af;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+            border: 1px solid transparent
+        }
+
+        .btn:hover {
+            background: #2c818f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(56, 160, 175, 0.2)
+        }
+
+        .btn-ai {
+            background: #4fb8c8;
+            font-weight: 600;
+            padding: 12px 30px;
+            font-size: 16px
+        }
+
+        .btn-ai:hover {
+            background: #38a0af
+        }
+
+        .btn-custom {
+            background: #ff7a5f;
+            font-weight: 600;
+            padding: 12px 30px;
+            font-size: 16px
+        }
+
+        .btn-custom:hover {
+            background: #ff5a3c
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 25px
+        }
+
+        /* 标题样式：和首页一致 */
+        .title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #2c818f;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 10px;
+            text-align: center;
+            margin-top: 20px
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            width: 80px;
+            height: 3px;
+            background: #4fb8c8;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(79, 184, 200, 0.2)
+        }
+
+        .sub-title {
+            font-size: 18px;
+            color: #6a878e;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: normal
+        }
+
+        /* AI 初定区域：核心交互区 */
+        .ai-init {
+            background: #fff;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 5px 15px rgba(79, 184, 200, 0.1);
+            border: 1px solid #e0f2f5;
+            margin-bottom: 50px
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px
+        }
+
+        .ai-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e0f2f5;
+            color: #2c818f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold
+        }
+
+        .ai-header-text h3 {
+            font-size: 22px;
+            color: #2c818f;
+            margin-bottom: 5px
+        }
+
+        .ai-header-text p {
+            color: #6a878e;
+            font-size: 14px
+        }
+
+        .ai-form {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .form-label {
+            color: #2c818f;
+            font-weight: 500;
+            font-size: 14px
+        }
+
+        .form-input, .form-select {
+            padding: 12px 15px;
+            border: 1px solid #e0f2f5;
+            border-radius: 8px;
+            background: #f8fcfd;
+            color: #33474d;
+            font-size: 14px
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #4fb8c8
+        }
+
+        .form-textarea {
+            grid-column: 1 / -1;
+            padding: 12px 15px;
+            border: 1px solid #e0f2f5;
+            border-radius: 8px;
+            background: #f8fcfd;
+            color: #33474d;
+            font-size: 14px;
+            min-height: 80px;
+            resize: vertical
+        }
+
+        .ai-btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px
+        }
+
+        /* AI 生成结果预览（默认隐藏） */
+        .ai-result {
+            background: #f8fcfd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px
+        }
+
+        .result-title {
+            font-size: 18px;
+            color: #2c818f;
+            font-weight: 600
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px
+        }
+
+        .result-btn {
+            padding: 6px 15px;
+            font-size: 13px;
+            border-radius: 20px
+        }
+
+        .result-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px
+        }
+
+        .day-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 3px solid #4fb8c8;
+            box-shadow: 0 3px 10px rgba(79, 184, 200, 0.08)
+        }
+
+        .day-title {
+            font-weight: 600;
+            color: #2c818f;
+            margin-bottom: 10px;
+            font-size: 15px
+        }
+
+        .day-route {
+            font-size: 14px;
+            color: #33474d;
+            line-height: 1.6
+        }
+
+        /* 场景定制区域 */
+        .scene-custom {
+            margin-bottom: 60px
+        }
+
+        .scene-title {
+            font-size: 24px;
+            color: #2c818f;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 10px
+        }
+
+        .scene-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            width: 60px;
+            height: 3px;
+            background: #4fb8c8;
+            border-radius: 2px
+        }
+
+        .scene-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px
+        }
+
+        .scene-card {
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(79, 184, 200, 0.1);
+            border: 1px solid #e0f2f5;
+            transition: 0.3s
+        }
+
+        .scene-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(79, 184, 200, 0.15);
+            border-color: #4fb8c8
+        }
+
+        .scene-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover
+        }
+
+        .scene-body {
+            padding: 25px;
+        }
+
+        .scene-name {
+            font-size: 20px;
+            color: #2c818f;
+            font-weight: 600;
+            margin-bottom: 10px
+        }
+
+        .scene-desc {
+            color: #6a878e;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px
+        }
+
+        .scene-service {
+            margin-bottom: 20px
+        }
+
+        .service-title {
+            font-weight: 600;
+            color: #2c818f;
+            font-size: 14px;
+            margin-bottom: 8px
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px
+        }
+
+        .service-tag {
+            padding: 4px 10px;
+            background: #e0f2f5;
+            color: #2c818f;
+            border-radius: 20px;
+            font-size: 12px
+        }
+
+        .package-type {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px
+        }
+
+        .package-option {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e0f2f5;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s
+        }
+
+        .package-option.active {
+            border-color: #4fb8c8;
+            background: #f8fcfd;
+            color: #2c818f;
+            font-weight: 600
+        }
+
+        .scene-price {
+            font-size: 22px;
+            color: #ff5a3c;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: baseline;
+            gap: 5px
+        }
+
+        .price-unit {
+            font-size: 14px;
+            color: #6a878e;
+            font-weight: normal
+        }
+
+        /* 专属定制区域 */
+        .exclusive-custom {
+            background: #fff;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 5px 15px rgba(79, 184, 200, 0.1);
+            border: 1px solid #e0f2f5;
+            margin-top: 50px;
+            margin-bottom: 60px;
+            text-align: center
+        }
+
+        .exclusive-title {
+            font-size: 22px;
+            color: #2c818f;
+            font-weight: 600;
+            margin-bottom: 15px
+        }
+
+        .exclusive-desc {
+            color: #6a878e;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 25px;
+            font-size: 15px
+        }
+
+        .exclusive-features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0f2f5;
+            color: #2c818f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: #33474d;
+            text-align: center
+        }
+
+        /* 底部：和首页一致 */
+        .footer {
+            background: #2c818f;
+            color: #fff;
+            padding: 45px 0;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 -3px 12px rgba(79, 184, 200, 0.18)
+        }
+
+        .footer .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .footer .links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 15px 0 20px;
+            flex-wrap: wrap
+        }
+
+        .footer a {
+            color: #d5f0f5;
+            text-decoration: none;
+            font-size: 15px;
+            transition: 0.3s;
+            padding: 3px 0;
+        }
+
+        .footer a:hover {
+            color: #fff;
+            text-decoration: underline
+        }
+
+        .footer p {
+            font-size: 14px;
+            color: #e0f2f5;
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+
+        /* 响应式：适配小屏幕 */
+        @media (max-width: 992px) {
+            .ai-form {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .result-content {
+                grid-template-columns: 1fr
+            }
+
+            .scene-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .exclusive-features {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 15px 20px
+            }
+
+            .nav {
+                gap: 15px
+            }
+
+            .nav a {
+                font-size: 14px
+            }
+
+            .ai-form {
+                grid-template-columns: 1fr
+            }
+
+            .ai-btn-group {
+                flex-direction: column;
+                gap: 10px
+            }
+
+            .scene-grid {
+                grid-template-columns: 1fr
+            }
+
+            .exclusive-features {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+    <!-- 引入字体图标 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- 导航栏：和首页一致，旅行定制标为活跃 -->
+<div class="header">
+    <div class="logo">拾光旅栈</div>
+    <div class="nav">
+        <a href="index.html">首页</a>
+        <a href="manghe.html">酒店盲盒</a>
+        <a href="zhuanshou.html">转售市场</a>
+        <a href="dazi.html">找搭子</a>
+        <a href="dingzhi.html" class="active">旅行定制</a>
+        <a href="jijiu.html">机酒预订</a>
+        <a href="kuajing.html">随行邮物</a>
+        <a href="pintuan.html">多人拼团</a>
+    </div>
+    <button class="btn">登录/注册</button>
+</div>
+
+<div class="container">
+    <!-- 页面主标题 -->
+    <h1 class="title">旅行定制 · 你的专属行程</h1>
+    <p class="sub-title">AI 免费初定线路 → 场景化精准匹配 → 1v1 专属定制，按需选择，灵活打包，满足你的所有旅行想象</p>
+
+    <!-- AI 免费初定区域 -->
+    <div class="ai-init">
+        <div class="ai-header">
+            <div class="ai-icon"><i class="fas fa-robot"></i></div>
+            <div class="ai-header-text">
+                <h3>第一步：AI 免费生成基础线路（零成本试错）</h3>
+                <p>填写基础需求，30秒生成专属线路，不满意可直接选择场景定制或专属定制</p>
+            </div>
+        </div>
+        <form class="ai-form" id="aiForm">
+            <div class="form-group">
+                <label class="form-label">目的地</label>
+                <input type="text" class="form-input" placeholder="例如：三亚、丽江、成都" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">出行天数</label>
+                <select class="form-select" required>
+                    <option value="">选择天数</option>
+                    <option value="3">3天2晚</option>
+                    <option value="4">4天3晚</option>
+                    <option value="5">5天4晚</option>
+                    <option value="6">6天5晚</option>
+                    <option value="7">7天6晚</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">人均预算（元）</label>
+                <select class="form-select" required>
+                    <option value="">选择预算</option>
+                    <option value="2000">2000以下</option>
+                    <option value="2000-3000">2000-3000</option>
+                    <option value="3000-5000">3000-5000</option>
+                    <option value="5000+">5000以上</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">旅行人群</label>
+                <select class="form-select" required>
+                    <option value="">选择人群</option>
+                    <option value="family">亲子家庭</option>
+                    <option value="young">年轻朋友</option>
+                    <option value="couple">情侣</option>
+                    <option value="alone">独自旅行</option>
+                    <option value="elder">中老年</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">核心需求（可选）</label>
+                <textarea class="form-textarea" placeholder="例如：喜欢拍照、不赶行程、必去某景点、不吃辣等"></textarea>
+            </div>
+        </form>
+        <div class="ai-btn-group">
+            <button class="btn btn-ai" type="button" onclick="generateAiRoute()">AI 生成线路</button>
+            <button class="btn" type="button" onclick="document.getElementById('aiResult').style.display='none'">重置</button>
+        </div>
+
+        <!-- AI 生成结果（默认隐藏） -->
+        <div class="ai-result" id="aiResult">
+            <div class="result-header">
+                <div class="result-title">AI 为你生成「三亚 5天4晚亲子游」线路</div>
+                <div class="result-actions">
+                    <button class="btn result-btn" onclick="editAiRoute()">修改需求</button>
+                    <button class="btn result-btn btn-custom" onclick="switchToSceneCustom()">不满意？选场景定制</button>
+                </div>
+            </div>
+            <div class="result-content">
+                <div class="day-card">
+                    <div class="day-title">Day1：抵达三亚 → 亚龙湾</div>
+                    <div class="day-route">
+                        上午：抵达三亚凤凰机场，专车接机 → 入住亚龙湾海景酒店<br>
+                        下午：亚龙湾沙滩自由活动（亲子沙滩玩具免费提供）<br>
+                        晚上：亚龙湾海鲜广场（儿童专属餐具+不辣选项）
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-title">Day2：蜈支洲岛亲子全天游</div>
+                    <div class="day-route">
+                        上午：酒店早餐 → 前往蜈支洲岛（优先安排儿童通道）<br>
+                        下午：儿童水上乐园+浅海拾贝（专业教练陪同）<br>
+                        晚上：返回酒店 → 酒店儿童影院
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-title">Day3：天涯海角 → 椰梦长廊</div>
+                    <div class="day-route">
+                        上午：酒店早餐 → 前往天涯海角（亲子打卡点讲解）<br>
+                        下午：椰梦长廊骑行（亲子双人自行车）<br>
+                        晚上：三亚湾夜市（儿童小吃推荐）
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-title">Day4：分界洲岛 → 海洋剧场</div>
+                    <div class="day-route">
+                        上午：酒店早餐 → 前往分界洲岛 → 海洋剧场看海豚表演<br>
+                        下午：分界洲岛亲子互动项目（喂海豚、海底漫步体验）<br>
+                        晚上：返回市区 → 特色椰子鸡火锅（不辣）
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-title">Day5：三亚国际免税城 → 返程</div>
+                    <div class="day-route">
+                        上午：酒店早餐 → 前往三亚国际免税城（儿童游乐区托管）<br>
+                        下午：专车送机 → 结束行程
+                    </div>
+                </div>
+                <div class="day-card">
+                    <div class="day-title">服务说明</div>
+                    <div class="day-route">
+                        推荐打包：半包（含行程规划+酒店+专车接送）<br>
+                        预估预算：3500元/人（亲子2大1小总价9800元）<br>
+                        可调整项：景点顺序、酒店等级、餐饮口味
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 场景定制区域 -->
+    <div class="scene-custom" id="sceneCustom">
+        <h2 class="scene-title">第二步：场景化定制（精准匹配需求）</h2>
+        <div class="scene-grid">
+            <!-- 亲子游定制 -->
+            <div class="scene-card">
+                <img src="25.jpg" alt="亲子游定制" class="scene-img">
+                <div class="scene-body">
+                    <h3 class="scene-name">亲子欢乐游定制</h3>
+                    <p class="scene-desc">专为家庭设计，行程宽松不赶时间，精选亲子友好景点、儿童设施齐全的酒店，含儿童餐推荐和专属服务</p>
+                    <div class="scene-service">
+                        <div class="service-title">核心服务</div>
+                        <div class="service-tags">
+                            <span class="service-tag">亲子景点优先</span>
+                            <span class="service-tag">儿童设施酒店</span>
+                            <span class="service-tag">儿童餐推荐</span>
+                            <span class="service-tag">专车接送</span>
+                            <span class="service-tag">优先通道</span>
+                        </div>
+                    </div>
+                    <div class="package-type">
+                        <div class="package-option active">全包（机酒车门票）</div>
+                        <div class="package-option">半包（行程+酒店）</div>
+                    </div>
+                    <div class="scene-price">¥3800 <span class="price-unit">起/人</span></div>
+                    <button class="btn btn-custom" onclick="alert('已选择亲子游定制，将为你分配专属定制师，1小时内联系你确认细节～')">立即定制</button>
+                </div>
+            </div>
+
+            <!-- 年轻潮玩定制 -->
+            <div class="scene-card">
+                <img src="26.jpg" alt="年轻潮玩定制" class="scene-img">
+                <div class="scene-body">
+                    <h3 class="scene-name">年轻潮玩定制</h3>
+                    <p class="scene-desc">专为年轻人设计，涵盖网红打卡点、小众玩法、夜生活推荐，行程灵活自由，支持拼团交友，性价比拉满</p>
+                    <div class="scene-service">
+                        <div class="service-title">核心服务</div>
+                        <div class="service-tags">
+                            <span class="service-tag">网红打卡点</span>
+                            <span class="service-tag">小众玩法</span>
+                            <span class="service-tag">夜生活推荐</span>
+                            <span class="service-tag">拼团交友</span>
+                            <span class="service-tag">灵活调整</span>
+                        </div>
+                    </div>
+                    <div class="package-type">
+                        <div class="package-option active">全包（机酒车门票）</div>
+                        <div class="package-option">半包（行程+酒店）</div>
+                    </div>
+                    <div class="scene-price">¥3200 <span class="price-unit">起/人</span></div>
+                    <button class="btn btn-custom" onclick="alert('已选择年轻潮玩定制，将为你分配专属定制师，1小时内联系你确认细节～')">立即定制</button>
+                </div>
+            </div>
+
+            <!-- 慢享风景定制 -->
+            <div class="scene-card">
+                <img src="27.jpg" alt="慢享风景定制" class="scene-img">
+                <div class="scene-body">
+                    <h3 class="scene-name">慢享风景定制</h3>
+                    <p class="scene-desc">专为喜欢安静的游客设计，行程宽松，精选自然风光优美的景点，入住远离喧嚣的特色民宿，沉浸式体验慢生活</p>
+                    <div class="scene-service">
+                        <div class="service-title">核心服务</div>
+                        <div class="service-tags">
+                            <span class="service-tag">自然风光</span>
+                            <span class="service-tag">特色民宿</span>
+                            <span class="service-tag">宽松行程</span>
+                            <span class="service-tag">小众路线</span>
+                            <span class="service-tag">摄影指导</span>
+                        </div>
+                    </div>
+                    <div class="package-type">
+                        <div class="package-option active">全包（机酒车门票）</div>
+                        <div class="package-option">半包（行程+酒店）</div>
+                    </div>
+                    <div class="scene-price">¥4200 <span class="price-unit">起/人</span></div>
+                    <button class="btn btn-custom" onclick="alert('已选择慢享风景定制，将为你分配专属定制师，1小时内联系你确认细节～')">立即定制</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 专属1v1定制区域 -->
+        <div class="exclusive-custom">
+            <h3 class="exclusive-title">第三步：1v1 专属定制（满足所有个性化需求）</h3>
+            <p class="exclusive-desc">AI 生成和场景定制都无法满足你？选择专属1v1定制，提任意需求（如：特定景点、小众路线、特殊饮食、商务需求等），定制师全程跟进，打造独一无二的旅行体验</p>
+            <div class="exclusive-features">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-user-tie"></i></div>
+                    <div class="feature-text">专属定制师</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-check-double"></i></div>
+                    <div class="feature-text">全需求满足</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                    <div class="feature-text">透明报价</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <div class="feature-text">24小时服务</div>
+                </div>
+            </div>
+            <button class="btn btn-custom" onclick="alert('已预约1v1专属定制，请填写详细需求，定制师将在30分钟内与你联系～')">预约专属定制师</button>
+        </div>
+    </div>
+
+    <!-- 底部：和首页一致 -->
+    <div class="footer">
+        <div class="logo-text">拾光旅栈 —— 创新旅游电商平台</div>
+        <div class="links">
+            <a href="#">关于我们</a>
+            <a href="#">隐私政策</a>
+            <a href="#">服务条款</a>
+            <a href="#">联系客服</a>
+            <a href="#">商家入驻</a>
+            <a href="#">旅行攻略</a>
+            <a href="#">常见问题</a>
+        </div>
+        <p>© 2026 拾光旅栈 版权所有 | 旅游经营许可证：x-xxx-xxxxxx</p>
+        <p>客服热线：xxx-xxx-xxxx | 工作时间：9:00-21:00</p>
+    </div>
+
+    <script>
+        // AI 生成线路
+        function generateAiRoute() {
+            const form = document.getElementById('aiForm');
+            const inputs = form.querySelectorAll('[required]');
+            let isComplete = true;
+
+            // 验证必填项
+            inputs.forEach(input => {
+                if (!input.value) {
+                    isComplete = false;
+                    input.style.borderColor = '#ff5a3c';
+                    setTimeout(() => input.style.borderColor = '#e0f2f5', 2000);
+                }
+            });
+
+            if (isComplete) {
+                // 显示生成结果
+                document.getElementById('aiResult').style.display = 'block';
+                // 滚动到结果区域
+                document.getElementById('aiResult').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('请填写所有必填项后再生成线路～');
+            }
+        }
+
+        // 修改AI线路需求
+        function editAiRoute() {
+            // 滚动到表单区域
+            document.querySelector('.ai-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 切换到场景定制
+        function switchToSceneCustom() {
+            // 隐藏AI结果
+            document.getElementById('aiResult').style.display = 'none';
+            // 滚动到场景定制区域
+            document.getElementById('sceneCustom').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 打包选项切换
+        document.querySelectorAll('.package-option').forEach(option => {
+            option.onclick = function() {
+                // 移除同组其他选项的active
+                this.parentElement.querySelectorAll('.package-option').forEach(item => {
+                    item.classList.remove('active');
+                });
+                // 添加当前选项的active
+                this.classList.add('active');
+            }
+        });
+    </script>
+
+</body>
+</html>

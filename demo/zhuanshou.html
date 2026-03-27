@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>拾光旅栈 - 旅行权益转售市场</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
+    body{background:#f0f7f9;color:#33474d}
+
+    /* 导航栏：和首页一致，转售页标为活跃 */
+    .header{
+        background:#4fb8c8;
+        padding:18px 40px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        box-shadow:0 3px 12px rgba(79,184,200,0.18);
+        position:sticky;top:0;z-index:1000
+    }
+    .logo{
+        font-size:28px;
+        font-weight:bold;
+        color:#fff;
+        cursor:pointer;
+        text-shadow:0 2px 4px rgba(0,0,0,0.1)
+    }
+    .nav{display:flex;gap:30px}
+    .nav a{
+        text-decoration:none;
+        color:#fff;
+        font-size:15px;
+        font-weight:500;
+        transition:0.3s;
+        padding:5px 0
+    }
+    .nav a:hover{color:#d5f0f5;border-bottom:2px solid #fff}
+    .nav a.active{color:#fff;border-bottom:2px solid #fff}
+
+    /* 按钮样式：和首页一致 */
+    .btn{
+        padding:11px 22px;
+        background:#38a0af;
+        color:#fff;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        transition:0.3s;
+        font-weight:500;
+        border:1px solid transparent
+    }
+    .btn:hover{background:#2c818f;transform:translateY(-2px);box-shadow:0 4px 8px rgba(56,160,175,0.2)}
+    .btn-sell{
+        background:#ff7a5f;
+        font-weight:600;
+        padding:12px 30px;
+        font-size:16px
+    }
+    .btn-sell:hover{background:#ff5a3c}
+
+    .container{
+        max-width:1300px;
+        margin:30px auto;
+        padding:0 25px
+    }
+
+    /* 标题样式：和首页一致 */
+    .title{
+        font-size:28px;
+        margin-bottom:10px;
+        color:#2c818f;
+        font-weight:700;
+        position:relative;
+        padding-bottom:10px;
+        text-align:center;
+        margin-top:20px
+    }
+    .title::after{
+        content:'';
+        position:absolute;
+        left:50%;
+        transform:translateX(-50%);
+        bottom:0;
+        width:80px;
+        height:3px;
+        background:#4fb8c8;
+        border-radius:2px;
+        box-shadow:0 1px 3px rgba(79,184,200,0.2)
+    }
+    .sub-title{
+        font-size:18px;
+        color:#6a878e;
+        text-align:center;
+        margin-bottom:30px;
+        font-weight:normal
+    }
+
+    /* 筛选栏：闲鱼式筛选，实用易操作 */
+    .filter-bar{
+        background:#fff;
+        border-radius:15px;
+        padding:15px 25px;
+        box-shadow:0 4px 12px rgba(79,184,200,0.1);
+        margin-bottom:30px;
+        display:flex;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:20px
+    }
+    .filter-item{
+        display:flex;
+        align-items:center;
+        gap:8px
+    }
+    .filter-label{
+        color:#2c818f;
+        font-weight:600;
+        font-size:15px
+    }
+    .filter-select{
+        padding:8px 15px;
+        border:1px solid #e0f2f5;
+        border-radius:8px;
+        background:#f8fcfd;
+        color:#33474d;
+        font-size:14px;
+        cursor:pointer;
+        transition:0.3s
+    }
+    .filter-select:focus{
+        outline:none;
+        border-color:#4fb8c8
+    }
+    .filter-tags{
+        display:flex;
+        gap:10px;
+        margin-left:auto
+    }
+    .filter-tag{
+        padding:6px 15px;
+        border-radius:20px;
+        background:#f0f7f9;
+        color:#2c818f;
+        font-size:14px;
+        cursor:pointer;
+        transition:0.3s
+    }
+    .filter-tag.active{
+        background:#4fb8c8;
+        color:#fff
+    }
+    .filter-tag:hover{
+        background:#e0f2f5
+    }
+    .filter-tag.active:hover{
+        background:#38a0af
+    }
+
+    /* 转售商品列表：闲鱼式卡片布局 */
+    .resale-list{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:25px;
+        margin-bottom:60px
+    }
+    .resale-card{
+        background:#fff;
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:0 5px 15px rgba(79,184,200,0.1);
+        border:1px solid #e0f2f5;
+        transition:0.3s;
+        display:flex;
+        flex-direction:column
+    }
+    .resale-card:hover{
+        transform:translateY(-6px);
+        box-shadow:0 10px 25px rgba(79,184,200,0.15);
+        border-color:#4fb8c8
+    }
+    /* 商品截图证明区 */
+    .card-img{
+        width:100%;
+        height:180px;
+        background:#f8fcfd;
+        padding:15px;
+        border-bottom:1px solid #e0f2f5
+    }
+    .proof-card{
+        width:100%;
+        height:100%;
+        background:#fff;
+        border:1px dashed #4fb8c8;
+        border-radius:10px;
+        padding:10px;
+        overflow:hidden
+    }
+    .proof-item{
+        display:flex;
+        justify-content:space-between;
+        font-size:13px;
+        padding:4px 0;
+        color:#33474d
+    }
+    .proof-label{
+        color:#6a878e;
+        font-weight:500
+    }
+    .proof-highlight{
+        color:#ff5a3c;
+        font-weight:bold
+    }
+
+    /* 商品信息区 */
+    .card-info{
+        padding:20px;
+        flex:1;
+        display:flex;
+        flex-direction:column
+    }
+    .card-title{
+        font-size:17px;
+        color:#2c818f;
+        font-weight:600;
+        margin-bottom:10px;
+        line-height:1.4
+    }
+    .card-desc{
+        font-size:14px;
+        color:#6a878e;
+        line-height:1.6;
+        margin-bottom:15px;
+        flex:1
+    }
+    /* 价格+折扣区 */
+    .price-area{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-bottom:15px
+    }
+    .current-price{
+        font-size:22px;
+        color:#ff5a3c;
+        font-weight:bold
+    }
+    .original-price{
+        font-size:13px;
+        color:#9aa7ac;
+        text-decoration:line-through
+    }
+    .discount-tag{
+        background:#fff0ed;
+        color:#ff5a3c;
+        padding:3px 10px;
+        border-radius:20px;
+        font-size:13px;
+        font-weight:600
+    }
+    /* 有效期+卖家信息 */
+    .meta-info{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        font-size:13px;
+        color:#9aa7ac;
+        margin-bottom:15px
+    }
+    .valid-time{
+        color:#38a0af;
+        font-weight:500
+    }
+    .seller{
+        display:flex;
+        align-items:center;
+        gap:6px
+    }
+    .seller-avatar{
+        width:24px;
+        height:24px;
+        border-radius:50%;
+        background:#4fb8c8;
+        color:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:12px;
+        font-weight:bold
+    }
+
+    /* 评论互动区：闲鱼式底部评论栏 */
+    .comment-area{
+        padding:15px 20px;
+        border-top:1px solid #f0f7f9;
+        background:#f8fcfd
+    }
+    .comment-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px
+    }
+    .comment-count{
+        font-size:13px;
+        color:#6a878e;
+        font-weight:500
+    }
+    .comment-list{
+        max-height:80px;
+        overflow-y:auto;
+        margin-bottom:10px
+    }
+    .comment-item{
+        display:flex;
+        gap:8px;
+        margin-bottom:8px;
+        font-size:12px
+    }
+    .buyer-avatar{
+        width:20px;
+        height:20px;
+        border-radius:50%;
+        background:#e0f2f5;
+        color:#2c818f;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:10px;
+        flex-shrink:0
+    }
+    .comment-content{
+        flex:1
+    }
+    .buyer-name{
+        color:#2c818f;
+        font-weight:500;
+        margin-bottom:2px
+    }
+    .comment-text{
+        color:#6a878e;
+        line-height:1.4
+    }
+    .seller-reply{
+        color:#ff5a3c;
+        margin-top:2px
+    }
+    .chat-btn{
+        width:100%;
+        padding:8px 0;
+        background:#e0f2f5;
+        color:#2c818f;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        font-size:14px;
+        font-weight:500;
+        transition:0.3s
+    }
+    .chat-btn:hover{
+        background:#4fb8c8;
+        color:#fff
+    }
+
+    /* 发布转售入口 */
+    .sell-entry{
+        background:#fff;
+        border-radius:18px;
+        padding:30px;
+        box-shadow:0 5px 15px rgba(79,184,200,0.1);
+        border:1px solid #e0f2f5;
+        text-align:center;
+        margin-bottom:60px
+    }
+    .sell-entry h3{
+        font-size:20px;
+        color:#2c818f;
+        margin-bottom:15px;
+        font-weight:600
+    }
+    .sell-entry p{
+        color:#6a878e;
+        line-height:1.6;
+        margin-bottom:25px;
+        font-size:15px
+    }
+
+    /* 底部：和首页一致 */
+    .footer{
+        background:#2c818f;
+        color:#fff;
+        padding:45px 0;
+        text-align:center;
+        margin-top:30px;
+        box-shadow:0 -3px 12px rgba(79,184,200,0.18)
+    }
+    .footer .logo-text{
+        font-size:20px;
+        font-weight:700;
+        margin-bottom:15px;
+        letter-spacing:1px;
+    }
+    .footer .links{
+        display:flex;
+        justify-content:center;
+        gap:25px;
+        margin:15px 0 20px;
+        flex-wrap:wrap
+    }
+    .footer a{
+        color:#d5f0f5;
+        text-decoration:none;
+        font-size:15px;
+        transition:0.3s;
+        padding:3px 0;
+    }
+    .footer a:hover{color:#fff;text-decoration:underline}
+    .footer p{
+        font-size:14px;
+        color:#e0f2f5;
+        margin:5px 0;
+        line-height:1.6;
+    }
+
+    /* 响应式：适配小屏幕 */
+    @media (max-width:992px) {
+        .resale-list{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:576px) {
+        .header{padding:15px 20px}
+        .nav{gap:15px}
+        .nav a{font-size:14px}
+        .resale-list{grid-template-columns:1fr}
+        .filter-bar{gap:15px}
+        .filter-tags{margin-left:0;margin-top:10px}
+    }
+</style>
+</head>
+<body>
+
+<!-- 导航栏：和首页一致，转售市场标为活跃 -->
+<div class="header">
+    <div class="logo">拾光旅栈</div>
+    <div class="nav">
+        <a href="index.html">首页</a>
+        <a href="manghe.html">酒店盲盒</a>
+        <a href="zhuanshou.html" class="active">转售市场</a>
+        <a href="dazi.html">找搭子</a>
+        <a href="dingzhi.html">旅行定制</a>
+        <a href="jijiu.html">机酒预订</a>
+        <a href="kuajing.html">随行邮物</a>
+        <a href="pintuan.html">多人拼团</a>
+    </div>
+    <button class="btn">登录/注册</button>
+</div>
+
+<div class="container">
+    <!-- 页面主标题 -->
+    <h1 class="title">旅行权益转售市场</h1>
+    <p class="sub-title">闲置机票/酒店/盲盒权益一键转售，平台担保交易更安全 | 低价捡漏，超高性价比</p>
+
+    <!-- 发布转售入口 -->
+    <div class="sell-entry">
+        <h3>有闲置旅行权益？一键转售回血！</h3>
+        <p>抽中用不上的盲盒、临时取消的行程、未使用的酒店券，都能在这里转售，快速变现～</p>
+        <button class="btn btn-sell" onclick="alert('跳转到发布转售页面，填写商品信息+上传盲盒截图即可发布')">发布转售商品</button>
+    </div>
+
+    <!-- 筛选栏 -->
+    <div class="filter-bar">
+        <div class="filter-item">
+            <span class="filter-label">商品类型：</span>
+            <select class="filter-select">
+                <option value="all">全部商品</option>
+                <option value="flight">机票权益</option>
+                <option value="hotel">酒店权益</option>
+                <option value="blind">盲盒权益</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <span class="filter-label">折扣力度：</span>
+            <select class="filter-select">
+                <option value="all">全部折扣</option>
+                <option value="9">9折以上</option>
+                <option value="8">8-9折</option>
+                <option value="7">7-8折</option>
+                <option value="6">6-7折</option>
+                <option value="below6">6折以下</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <span class="filter-label">剩余有效期：</span>
+            <select class="filter-select">
+                <option value="all">全部有效期</option>
+                <option value="30">30天以上</option>
+                <option value="15-30">15-30天</option>
+                <option value="7-15">7-15天</option>
+                <option value="below7">7天以内</option>
+            </select>
+        </div>
+        <div class="filter-tags">
+            <div class="filter-tag active">最新发布</div>
+            <div class="filter-tag">价格从低到高</div>
+            <div class="filter-tag">折扣最大</div>
+            <div class="filter-tag">有效期最长</div>
+        </div>
+    </div>
+
+    <!-- 转售商品列表：闲鱼式卡片 -->
+    <div class="resale-list">
+        <!-- 商品1：机票转售 -->
+        <div class="resale-card">
+            <div class="card-img">
+                <div class="proof-card">
+                    <div class="proof-item">
+                        <span class="proof-label">出发地：</span>
+                        <span class="proof-highlight">北京</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">目的地：</span>
+                        <span class="proof-highlight">三亚</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">起飞时间：</span>
+                        <span>09:50</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">飞行时长：</span>
+                        <span>3小时20分钟</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">有效期至：</span>
+                        <span class="proof-highlight">2026-05-20</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-info">
+                <h3 class="card-title">北京→三亚机票！直飞3小时，骨折价出</h3>
+                <p class="card-desc">冲动抽的机票盲盒，本来想端午去三亚，结果临时要加班用不上了😭 原价980，现在6折出，有效期还有28天，有需要的姐妹速来！</p>
+                <div class="price-area">
+                    <span class="current-price">¥588</span>
+                    <span class="original-price">¥980</span>
+                    <span class="discount-tag">6折</span>
+                </div>
+                <div class="meta-info">
+                    <span class="valid-time">剩余28天</span>
+                    <span class="seller">
+                        <span class="seller-avatar">张</span>
+                        <span>小张不吃辣</span>
+                    </span>
+                </div>
+            </div>
+            <div class="comment-area">
+                <div class="comment-header">
+                    <span class="comment-count">3条留言</span>
+                </div>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <span class="buyer-avatar">李</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小李同学</div>
+                            <div class="comment-text">能刀吗？550出的话我直接拍！</div>
+                            <div class="seller-reply">卖家回复：最低570，不刀啦，已经很便宜了～</div>
+                        </span>
+                    </div>
+                    <div class="comment-item">
+                        <span class="buyer-avatar">王</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小王旅行记</div>
+                            <div class="comment-text">可以改名字吗？我想给我妈买</div>
+                        </span>
+                    </div>
+                </div>
+                <button class="chat-btn">联系卖家</button>
+            </div>
+        </div>
+
+        <!-- 商品2：酒店转售 -->
+        <div class="resale-card">
+            <div class="card-img">
+                <div class="proof-card">
+                    <div class="proof-item">
+                        <span class="proof-label">入住城市：</span>
+                        <span class="proof-highlight">成都</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">酒店星级：</span>
+                        <span class="proof-highlight">4钻高档型</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">入住房型：</span>
+                        <span>大床房（含双早）</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">市场原价：</span>
+                        <span>¥499/晚</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">有效期至：</span>
+                        <span class="proof-highlight">2026-06-15</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-info">
+                <h3 class="card-title">成都春熙路4钻酒店！含双早，7折出</h3>
+                <p class="card-desc">抽中的酒店盲盒，本来计划五一去成都玩，结果和朋友行程冲突了😅 酒店位置超棒，离春熙路步行5分钟，有效期还有45天，周末通用不加价！</p>
+                <div class="price-area">
+                    <span class="current-price">¥349</span>
+                    <span class="original-price">¥499</span>
+                    <span class="discount-tag">7折</span>
+                </div>
+                <div class="meta-info">
+                    <span class="valid-time">剩余45天</span>
+                    <span class="seller">
+                        <span class="seller-avatar">刘</span>
+                        <span>小刘爱旅行</span>
+                    </span>
+                </div>
+            </div>
+            <div class="comment-area">
+                <div class="comment-header">
+                    <span class="comment-count">5条留言</span>
+                </div>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <span class="buyer-avatar">陈</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小陈同学</div>
+                            <div class="comment-text">酒店具体名字是什么呀？可以选入住日期吗？</div>
+                            <div class="seller-reply">卖家回复：是成都XX酒店（春熙路店），入住日期只要在有效期内都能选～</div>
+                        </span>
+                    </div>
+                    <div class="comment-item">
+                        <span class="buyer-avatar">赵</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小赵同学</div>
+                            <div class="comment-text">300出吗？刚好我5.10-5.11要住</div>
+                        </span>
+                    </div>
+                </div>
+                <button class="chat-btn">联系卖家</button>
+            </div>
+        </div>
+
+        <!-- 商品3：机票转售 -->
+        <div class="resale-card">
+            <div class="card-img">
+                <div class="proof-card">
+                    <div class="proof-item">
+                        <span class="proof-label">出发地：</span>
+                        <span class="proof-highlight">上海</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">目的地：</span>
+                        <span class="proof-highlight">厦门</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">起飞时间：</span>
+                        <span>14:45</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">飞行时长：</span>
+                        <span>2小时10分钟</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">有效期至：</span>
+                        <span class="proof-highlight">2026-05-10</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-info">
+                <h3 class="card-title">上海→厦门直飞机票！5.5折捡漏</h3>
+                <p class="card-desc">公司团建取消了，机票退不了只能转售😮‍💨 原价860，现在5.5折出，有效期还有15天，适合想短途旅行的朋友，随时可订！</p>
+                <div class="price-area">
+                    <span class="current-price">¥473</span>
+                    <span class="original-price">¥860</span>
+                    <span class="discount-tag">5.5折</span>
+                </div>
+                <div class="meta-info">
+                    <span class="valid-time">剩余15天</span>
+                    <span class="seller">
+                        <span class="seller-avatar">周</span>
+                        <span>老周爱钓鱼</span>
+                    </span>
+                </div>
+            </div>
+            <div class="comment-area">
+                <div class="comment-header">
+                    <span class="comment-count">2条留言</span>
+                </div>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <span class="buyer-avatar">吴</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小吴同学</div>
+                            <div class="comment-text">是经济舱吗？可以改起飞时间吗？</div>
+                            <div class="seller-reply">卖家回复：是经济舱，起飞时间改不了哦，只能按盲盒上的时间～</div>
+                        </span>
+                    </div>
+                </div>
+                <button class="chat-btn">联系卖家</button>
+            </div>
+        </div>
+
+        <!-- 商品4：酒店转售 -->
+        <div class="resale-card">
+            <div class="card-img">
+                <div class="proof-card">
+                    <div class="proof-item">
+                        <span class="proof-label">入住城市：</span>
+                        <span class="proof-highlight">丽江</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">酒店星级：</span>
+                        <span class="proof-highlight">5钻豪华型</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">入住房型：</span>
+                        <span>观景房（含双早+接机）</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">市场原价：</span>
+                        <span>¥699/晚</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">有效期至：</span>
+                        <span class="proof-highlight">2026-06-30</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-info">
+                <h3 class="card-title">丽江5钻观景酒店！含接机，6.5折出</h3>
+                <p class="card-desc">本来想和对象去丽江度蜜月，结果分手了用不上了💔 酒店是观景房，能看到玉龙雪山，还含免费接机，有效期还有60天，性价比超高！</p>
+                <div class="price-area">
+                    <span class="current-price">¥454</span>
+                    <span class="original-price">¥699</span>
+                    <span class="discount-tag">6.5折</span>
+                </div>
+                <div class="meta-info">
+                    <span class="valid-time">剩余60天</span>
+                    <span class="seller">
+                        <span class="seller-avatar">郑</span>
+                        <span>小郑要开心</span>
+                    </span>
+                </div>
+            </div>
+            <div class="comment-area">
+                <div class="comment-header">
+                    <span class="comment-count">4条留言</span>
+                </div>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <span class="buyer-avatar">孙</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小孙同学</div>
+                            <div class="comment-text">可以住2个人吗？端午节能用吗？</div>
+                            <div class="seller-reply">卖家回复：可以住2人，端午节通用不加价！</div>
+                        </span>
+                    </div>
+                    <div class="comment-item">
+                        <span class="buyer-avatar">马</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小马同学</div>
+                            <div class="comment-text">400出吗？诚心要</div>
+                        </span>
+                    </div>
+                </div>
+                <button class="chat-btn">联系卖家</button>
+            </div>
+        </div>
+
+        <!-- 商品5：盲盒转售（未开盒） -->
+        <div class="resale-card">
+            <div class="card-img">
+                <div class="proof-card">
+                    <div class="proof-item">
+                        <span class="proof-label">商品类型：</span>
+                        <span class="proof-highlight">机票盲盒（未开盒）</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">购买价格：</span>
+                        <span>¥99</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">使用规则：</span>
+                        <span>全国通用，30天有效期</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">未开盒状态：</span>
+                        <span class="proof-highlight">可自行开盒抽目的地</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">有效期至：</span>
+                        <span class="proof-highlight">2026-05-25</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-info">
+                <h3 class="card-title">未开机票盲盒！8折出，自己抽惊喜</h3>
+                <p class="card-desc">多买了一个机票盲盒，自己已经抽中想去的地方了，这个闲置出～ 未开盒状态，你可以自己抽目的地，原价99，现在8折，有效期还有30天！</p>
+                <div class="price-area">
+                    <span class="current-price">¥79</span>
+                    <span class="original-price">¥99</span>
+                    <span class="discount-tag">8折</span>
+                </div>
+                <div class="meta-info">
+                    <span class="valid-time">剩余30天</span>
+                    <span class="seller">
+                        <span class="seller-avatar">胡</span>
+                        <span>小胡爱冒险</span>
+                    </span>
+                </div>
+            </div>
+            <div class="comment-area">
+                <div class="comment-header">
+                    <span class="comment-count">1条留言</span>
+                </div>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <span class="buyer-avatar">林</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小林同学</div>
+                            <div class="comment-text">开盒后不满意能退吗？</div>
+                            <div class="seller-reply">卖家回复：开盒后不能退哦，和平台规则一样～</div>
+                        </span>
+                    </div>
+                </div>
+                <button class="chat-btn">联系卖家</button>
+            </div>
+        </div>
+
+        <!-- 商品6：酒店转售 -->
+        <div class="resale-card">
+            <div class="card-img">
+                <div class="proof-card">
+                    <div class="proof-item">
+                        <span class="proof-label">入住城市：</span>
+                        <span class="proof-highlight">三亚</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">酒店星级：</span>
+                        <span class="proof-highlight">4钻高档型</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">入住房型：</span>
+                        <span>海景房（含双早）</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">市场原价：</span>
+                        <span>¥599/晚</span>
+                    </div>
+                    <div class="proof-item">
+                        <span class="proof-label">有效期至：</span>
+                        <span class="proof-highlight">2026-05-18</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-info">
+                <h3 class="card-title">三亚海景房！近亚龙湾，5折急出</h3>
+                <p class="card-desc">临时有事去不了三亚了，急出这套海景房😭 酒店离亚龙湾步行10分钟，房间能看海，原价599，现在5折出，有效期还有8天，先到先得！</p>
+                <div class="price-area">
+                    <span class="current-price">¥299</span>
+                    <span class="original-price">¥599</span>
+                    <span class="discount-tag">5折</span>
+                </div>
+                <div class="meta-info">
+                    <span class="valid-time">剩余8天</span>
+                    <span class="seller">
+                        <span class="seller-avatar">郭</span>
+                        <span>小郭爱海边</span>
+                    </span>
+                </div>
+            </div>
+            <div class="comment-area">
+                <div class="comment-header">
+                    <span class="comment-count">6条留言</span>
+                </div>
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <span class="buyer-avatar">何</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小何同学</div>
+                            <div class="comment-text">今天能入住吗？我现在就在三亚！</div>
+                            <div class="seller-reply">卖家回复：可以！拍下我马上帮你预约～</div>
+                        </span>
+                    </div>
+                    <div class="comment-item">
+                        <span class="buyer-avatar">罗</span>
+                        <span class="comment-content">
+                            <div class="buyer-name">小罗同学</div>
+                            <div class="comment-text">250出吗？今晚住一晚</div>
+                        </span>
+                    </div>
+                </div>
+                <button class="chat-btn">联系卖家</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 底部：和首页一致 -->
+<div class="footer">
+    <div class="logo-text">拾光旅栈 —— 创新旅游电商平台</div>
+    <div class="links">
+        <a href="#">关于我们</a>
+        <a href="#">隐私政策</a>
+        <a href="#">服务条款</a>
+        <a href="#">联系客服</a>
+        <a href="#">商家入驻</a>
+        <a href="#">旅行攻略</a>
+        <a href="#">常见问题</a>
+    </div>
+    <p>© 2026 拾光旅栈 版权所有 | 旅游经营许可证：x-xxx-xxxxxx</p>
+    <p>客服热线：xxx-xxx-xxxx | 工作时间：9:00-21:00</p>
+</div>
+
+</body>
+</html>

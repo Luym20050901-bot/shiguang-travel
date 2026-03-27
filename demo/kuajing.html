@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>拾光旅栈 - 随行邮物</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
+    body{background:#f0f7f9;color:#33474d}
+
+    /*头部导航通用样式*/
+    .header{
+        background:#4fb8c8;
+        padding:18px 40px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        box-shadow:0 3px 12px rgba(79,184,200,0.18);
+        position:sticky;top:0;z-index:1000
+    }
+    .logo{
+        font-size:28px;
+        font-weight:bold;
+        color:#fff;
+    }
+    .nav{display:flex;gap:30px}
+    .nav a{
+        text-decoration:none;
+        color:#fff;
+        font-size:15px;
+        font-weight:500;
+        transition:0.3s;
+        padding:5px 0
+    }
+    .nav a:hover{color:#d5f0f5;border-bottom:2px solid #fff}
+    .nav a.active{color:#fff;border-bottom:2px solid #fff}
+    .btn{
+        padding:11px 22px;
+        background:#38a0af;
+        color:#fff;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        transition:0.3s;
+        font-weight:500;
+    }
+    .btn:hover{background:#2c818f}
+
+    .container{max-width:1300px;margin:30px auto;padding:0 25px}
+    .title{
+        font-size:28px;
+        margin-bottom:10px;
+        color:#2c818f;
+        font-weight:700;
+        text-align:center;
+        margin-top:20px
+    }
+    .sub-title{
+        font-size:18px;
+        color:#6a878e;
+        text-align:center;
+        margin-bottom:30px;
+    }
+
+    /*暖心横幅*/
+    .tips-banner{
+        background:#e0f2f5;
+        border-radius:15px;
+        padding:15px;
+        text-align:center;
+        color:#2c818f;
+        font-weight:500;
+        margin-bottom:30px;
+    }
+
+    /*介绍模块*/
+    .intro-box{
+        background:#fff;
+        border-radius:18px;
+        padding:35px;
+        margin-bottom:35px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.06);
+        text-align:center;
+    }
+    .intro-desc{
+        font-size:16px;
+        color:#6a878e;
+        line-height:1.9;
+        max-width:950px;
+        margin:15px auto 0;
+    }
+
+    /*核心优势四宫格*/
+    .advantage-box{
+        background:#fff;
+        border-radius:18px;
+        padding:30px;
+        margin-bottom:35px;
+    }
+    .adv-title{
+        font-size:20px;
+        color:#2c818f;
+        font-weight:600;
+        text-align:center;
+        margin-bottom:25px;
+    }
+    .adv-grid{
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:20px;
+    }
+    .adv-item{
+        padding:25px 15px;
+        background:#f8fcfd;
+        border-radius:15px;
+        text-align:center;
+        border:1px solid #e0f2f5;
+    }
+    .adv-icon{
+        font-size:26px;
+        color:#4fb8c8;
+        margin-bottom:12px;
+    }
+
+    /*使用流程*/
+    .step-box{
+        background:#fff;
+        border-radius:18px;
+        padding:30px;
+        margin-bottom:35px;
+    }
+    .step-title{
+        font-size:20px;
+        color:#2c818f;
+        font-weight:600;
+        text-align:center;
+        margin-bottom:25px;
+    }
+    .step-grid{
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:18px;
+    }
+    .step-item{
+        background:#e0f2f5;
+        border-radius:15px;
+        padding:22px 15px;
+        text-align:center;
+    }
+    .step-num{
+        width:40px;height:40px;
+        line-height:40px;border-radius:50%;
+        background:#4fb8c8;color:#fff;
+        display:inline-block;margin-bottom:10px;font-weight:bold;
+    }
+
+    /*查询表单*/
+    .form-box{
+        background:#fff;
+        border-radius:18px;
+        padding:30px;
+        margin-bottom:35px;
+    }
+    .search-form{
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:18px;
+    }
+    .form-item{
+        display:flex;flex-direction:column;gap:8px;
+    }
+    .form-item label{
+        font-size:14px;color:#2c818f;font-weight:500;
+    }
+    .form-item input,.form-item select{
+        padding:12px;border:1px solid #e0f2f5;border-radius:10px;background:#f8fcfd;
+    }
+    .search-btn{
+        grid-column:1/-1;padding:13px;background:#4fb8c8;color:#fff;
+        border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;
+    }
+
+    /*邮寄套餐卡片*/
+    .card-title-h{
+        font-size:20px;color:#2c818f;font-weight:600;text-align:center;margin-bottom:20px;
+    }
+    .card-group{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);gap:25px;margin-bottom:35px;
+    }
+    .card{
+        background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.05);transition:0.3s;
+    }
+    .card:hover{transform:translateY(-5px)}
+    .card img{width:100%;height:180px;object-fit:cover;}
+    .card-body{padding:22px;}
+    .card-name{font-size:17px;font-weight:600;margin-bottom:10px;}
+    .card-text{font-size:14px;color:#6a878e;margin-bottom:12px;line-height:1.6;}
+    .price-text{font-size:20px;color:#ff5a3c;font-weight:bold;}
+
+    /*违禁提示栏*/
+    .warn-box{
+        background:#fff0ee;border-radius:15px;padding:20px;margin-bottom:35px;
+    }
+    .warn-title{color:#ff5a3c;font-weight:600;margin-bottom:10px;}
+
+    /*FAQ问答区*/
+    .faq-box{
+        background:#fff;border-radius:18px;padding:30px;margin-bottom:50px;
+    }
+    .faq-item{margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid #eee;}
+    .faq-q{font-weight:600;color:#2c818f;margin-bottom:8px;}
+    .faq-a{font-size:14px;color:#6a878e;}
+
+    /*底部 和首页完全统一样式*/
+    .footer{
+        background:#2c818f;color:#fff;padding:45px 0;text-align:center;
+    }
+    .footer .logo-text{
+        font-size:20px;
+        font-weight:700;
+        margin-bottom:15px;
+        letter-spacing:1px;
+    }
+    .footer .links{
+        display:flex;
+        justify-content:center;
+        gap:25px;
+        margin:15px 0 20px;
+        flex-wrap:wrap
+    }
+    .footer a{
+        color:#d5f0f5;
+        text-decoration:none;
+        font-size:15px;
+        transition:0.3s;
+        padding:3px 0;
+    }
+    .footer a:hover{color:#fff;text-decoration:underline}
+    .footer p{
+        font-size:14px;
+        color:#e0f2f5;
+        margin:5px 0;
+        line-height:1.6;
+    }
+</style>
+</head>
+<body>
+
+<!--导航-->
+<div class="header">
+    <div class="logo">拾光旅栈</div>
+    <div class="nav">
+        <a href="index.html">首页</a>
+        <a href="manghe.html">酒店盲盒</a>
+        <a href="zhuanshou.html">转售市场</a>
+        <a href="dazi.html">找搭子</a>
+        <a href="dingzhi.html">旅行定制</a>
+        <a href="jijiu.html">机酒预订</a>
+        <a href="kuajing.html" class="active">随行邮物</a>
+        <a href="pintuan.html">多人拼团</a>
+    </div>
+    <button class="btn">登录/注册</button>
+</div>
+
+<div class="container">
+    <h1 class="title">随行邮物</h1>
+    <p class="sub-title">国内境外通用｜旅行购物好物，轻松邮寄到家</p>
+
+    <!--暖心横幅-->
+    <div class="tips-banner">
+出游购物无需负重！国内景区+境外旅行好物，全程代收打包一键寄回家
+    </div>
+
+    <!--功能介绍-->
+    <div class="intro-box">
+        <div style="font-size:22px;color:#2c818f;font-weight:600">什么是随行邮物？</div>
+        <p class="intro-desc">
+拾光旅栈通用出行邮寄服务「随行邮物」，覆盖国内景区与境外旅行全场景。
+无论你在国内旅游购买特产纪念品，还是出境游玩选购美妆、零食、伴手礼等好物，
+都不用再担心行李超重、手提劳累、托运繁琐等问题。
+平台提供国内景区代收、境外多国仓库代收、专业加固打包、物流追踪、全境派送一站式服务，
+让你轻松游玩随心购物，所有心仪好物都能安全便捷邮寄到家。
+        </p>
+    </div>
+
+    <!--四大核心优势-->
+    <div class="advantage-box">
+        <div class="adv-title">四大服务优势</div>
+        <div class="adv-grid">
+            <div class="adv-item">
+                <div class="adv-icon">🌏</div>
+                <div>国内外全覆盖网点</div>
+            </div>
+            <div class="adv-item">
+                <div class="adv-icon">📦</div>
+                <div>专业防震加固打包</div>
+            </div>
+            <div class="adv-item">
+                <div class="adv-icon">🚚</div>
+                <div>全程物流实时追踪</div>
+            </div>
+            <div class="adv-item">
+                <div class="adv-icon">💴</div>
+                <div>透明定价省心实惠</div>
+            </div>
+        </div>
+    </div>
+
+    <!--使用流程-->
+    <div class="step-box">
+        <div class="step-title">简单四步 国内外均可轻松邮寄</div>
+        <div class="step-grid">
+            <div class="step-item">
+                <div class="step-num">1</div>
+                <div>旅行途中随心选购心仪好物</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">2</div>
+                <div>填写就近国内/境外代收地址</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">3</div>
+                <div>仓库验货整理 专业打包防护</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">4</div>
+                <div>物流直发 送货上门直达家中</div>
+            </div>
+        </div>
+    </div>
+
+    <!--运费查询表单-->
+    <div class="form-box">
+        <div class="search-form">
+            <div class="form-item">
+                <label>出行地区</label>
+                <input type="text" placeholder="国内景区 / 日本 / 韩国 / 泰国">
+            </div>
+            <div class="form-item">
+                <label>物品类别</label>
+                <select>
+                    <option>旅游特产纪念品</option>
+                    <option>美妆护肤彩妆</option>
+                    <option>零食伴手礼好物</option>
+                    <option>生活日用小物件</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <label>预估包裹重量</label>
+                <select>
+                    <option>1kg以内小件</option>
+                    <option>1-3kg常规包裹</option>
+                    <option>3-5kg大件礼包</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <label>收货城市</label>
+                <input type="text" placeholder="填写国内收货城市">
+            </div>
+            <button class="search-btn">立即查询邮寄费用</button>
+        </div>
+    </div>
+
+    <!--邮寄套餐卡片-->
+    <div class="card-title-h">国内外热门邮寄服务推荐</div>
+    <div class="card-group">
+        <div class="card">
+            <img src="34.jpg">
+            <div class="card-body">
+                <div class="card-name">国内景区特产邮寄</div>
+                <div class="card-text">全国各大旅游景区代收点全覆盖，特产零食纪念品轻松寄回家</div>
+                <div class="price-text">首重 ¥12 起</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="35.jpg">
+            <div class="card-body">
+                <div class="card-name">日本全境代收邮寄</div>
+                <div class="card-text">药妆、美妆、零食全覆盖，防潮精细打包，清关稳定快速</div>
+                <div class="price-text">首重 ¥68 /kg</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="36.jpg">
+            <div class="card-body">
+                <div class="card-name">韩国免税店专属邮寄</div>
+                <div class="card-text">彩妆护肤品防撞防压保护，免税商品一站式代收直发</div>
+                <div class="price-text">首重 ¥62 /kg</div>
+            </div>
+        </div>
+    </div>
+
+    <!--违禁提示-->
+    <div class="warn-box">
+        <div class="warn-title">⚠️ 禁止邮寄物品温馨提示</div>
+        <p>易燃易爆、管制物品、生鲜冷链、过量液体不可邮寄；特产零食、美妆纪念品均可正常寄送，下单前可提前确认物品合规性。</p>
+    </div>
+
+    <!--常见问题FAQ-->
+    <div class="faq-box">
+        <div class="adv-title">常见问题解答</div>
+        <div class="faq-item">
+            <div class="faq-q">Q1：国内旅游也可以使用代收邮寄吗？</div>
+            <div class="faq-a">可以，全国各大景区均设代收网点，国内境外全场景通用服务。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q">Q2：邮寄大概多久可以收到？</div>
+            <div class="faq-a">国内邮寄2-4天送达；境外邮寄正常清关7-15天送货上门。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-q">Q3：包裹损坏是否支持理赔？</div>
+            <div class="faq-a">全程专业加固包装，支持保价服务，包裹破损可申请正规理赔保障。</div>
+        </div>
+    </div>
+
+</div>
+
+<!--底部 和首页完全一模一样-->
+<div class="footer">
+        <div class="logo-text">拾光旅栈 —— 创新旅游电商平台</div>
+        <div class="links">
+            <a href="#">关于我们</a>
+            <a href="#">隐私政策</a>
+            <a href="#">服务条款</a>
+            <a href="#">联系客服</a>
+            <a href="#">商家入驻</a>
+            <a href="#">旅行攻略</a>
+            <a href="#">常见问题</a>
+        </div>
+        <p>© 2026 拾光旅栈 版权所有 | 旅游经营许可证：x-xxx-xxxxxx</p>
+        <p>客服热线：xxx-xxx-xxxx | 工作时间：9:00-21:00</p>
+    </div>
+
+</body>
+</html>

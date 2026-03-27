@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>拾光旅栈 - 多人拼团</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
+    body{background:#f0f7f9;color:#33474d}
+
+    .header{
+        background:#4fb8c8;padding:18px 40px;
+        display:flex;justify-content:space-between;align-items:center;
+        box-shadow:0 3px 12px rgba(79,184,200,0.18);
+        position:sticky;top:0;z-index:1000
+    }
+    .logo{font-size:28px;font-weight:bold;color:#fff}
+    .nav{display:flex;gap:30px}
+    .nav a{
+        text-decoration:none;color:#fff;font-size:15px;font-weight:500;
+        transition:0.3s;padding:5px 0
+    }
+    .nav a:hover{color:#d5f0f5;border-bottom:2px solid #fff}
+    .nav a.active{color:#fff;border-bottom:2px solid #fff}
+    .btn{
+        padding:11px 22px;background:#38a0af;color:#fff;
+        border:none;border-radius:10px;cursor:pointer;
+        transition:0.3s;font-weight:500;
+    }
+    .btn:hover{background:#2c818f}
+
+    .container{max-width:1300px;margin:30px auto;padding:0 25px}
+    .title{
+        font-size:28px;margin-bottom:10px;color:#2c818f;
+        font-weight:700;text-align:center;margin-top:20px
+    }
+    .sub-title{
+        font-size:18px;color:#6a878e;text-align:center;
+        margin-bottom:10px
+    }
+    .tip{
+        text-align:center;color:#2c818f;font-size:15px;
+        margin-bottom:30px;font-weight:500;
+    }
+
+    /* 拼团规则大图 */
+    .rule-big-box{
+        background:#fff;border-radius:18px;padding:30px;
+        margin-bottom:40px;box-shadow:0 4px 12px rgba(0,0,0,0.05)
+    }
+    .rule-header{
+        text-align:center;font-size:22px;font-weight:600;
+        color:#2c818f;margin-bottom:25px
+    }
+    .rule-steps{
+        display:grid;grid-template-columns:repeat(4,1fr);gap:20px
+    }
+    .step{
+        background:#e0f2f5;border-radius:15px;padding:20px;
+        text-align:center;font-weight:500
+    }
+    .step.highlight{
+        background:#ff7a5f;color:#fff
+    }
+    .step-num{
+        font-size:22px;margin-bottom:8px
+    }
+
+    /* 价格阶梯 */
+    .price-stair{
+        background:#fff;border-radius:18px;padding:25px 30px;
+        margin-bottom:40px;text-align:center
+    }
+    .stair-title{
+        font-size:20px;color:#2c818f;font-weight:600;margin-bottom:20px
+    }
+    .stair-grid{
+        display:grid;grid-template-columns:repeat(4,1fr);gap:15px
+    }
+    .stair{
+        padding:15px;border-radius:12px;background:#f8fcfd;
+        border:1px solid #e0f2f5
+    }
+    .stair.best{
+        border:2px solid #ff7a5f;background:#fff7f5
+    }
+    .p-num{font-weight:bold;color:#2c818f;margin-bottom:5px}
+    .p-price{font-size:18px;color:#ff5a3c;font-weight:bold}
+
+    /* 拼团卡片 */
+    .card-group{
+        display:grid;grid-template-columns:repeat(3,1fr);
+        gap:25px;margin-bottom:50px
+    }
+    .card{
+        background:#fff;border-radius:18px;overflow:hidden;
+        box-shadow:0 5px 15px rgba(0,0,0,0.05);
+        transition:0.3s
+    }
+    .card:hover{transform:translateY(-5px)}
+    .card img{width:100%;height:190px;object-fit:cover}
+    .card-body{padding:25px}
+    .card-tag{
+        display:inline-block;background:#e0f2f5;color:#2c818f;
+        padding:4px 10px;border-radius:10px;font-size:12px;margin-bottom:10px
+    }
+    .card-title{font-size:17px;font-weight:600;margin-bottom:10px}
+    .card-desc{font-size:14px;color:#6a878e;line-height:1.5;margin-bottom:12px}
+    .group-status{
+        font-size:13px;color:#ff5a3c;margin-bottom:10px
+    }
+    .price-area{margin-bottom:15px}
+    .old{font-size:14px;color:#999;text-decoration:line-through}
+    .now{font-size:24px;color:#ff5a3c;font-weight:bold;margin-left:8px}
+    .join-btn{
+        width:100%;padding:12px;background:#ff7a5f;
+        color:#fff;border:none;border-radius:10px;
+        font-size:15px;font-weight:500;cursor:pointer
+    }
+
+    .footer{
+        background:#2c818f;color:#fff;padding:45px 0;text-align:center
+    }
+    .footer .logo-text{
+        font-size:20px;
+        font-weight:700;
+        margin-bottom:15px;
+        letter-spacing:1px;
+    }
+    .footer .links{
+        display:flex;
+        justify-content:center;
+        gap:25px;
+        margin:15px 0 20px;
+        flex-wrap:wrap
+    }
+    .footer a{
+        color:#d5f0f5;
+        text-decoration:none;
+        font-size:15px;
+        transition:0.3s;
+        padding:3px 0;
+    }
+    .footer a:hover{color:#fff;text-decoration:underline}
+    .footer p{
+        font-size:14px;
+        color:#e0f2f5;
+        margin:5px 0;
+        line-height:1.6;
+    }
+</style>
+</head>
+<body>
+
+<!-- 导航 -->
+<div class="header">
+    <div class="logo">拾光旅栈</div>
+    <div class="nav">
+        <a href="index.html">首页</a>
+        <a href="manghe.html">酒店盲盒</a>
+        <a href="zhuanshou.html">转售市场</a>
+        <a href="dazi.html">找搭子</a>
+        <a href="dingzhi.html">旅行定制</a>
+        <a href="jijiu.html">机酒预订</a>
+        <a href="kuajing.html">随行邮物</a>
+        <a href="pintuan.html" class="active">多人拼团</a>
+    </div>
+    <button class="btn">登录/注册</button>
+</div>
+
+<div class="container">
+    <h1 class="title">多人拼团 · 人越多越便宜</h1>
+    <p class="sub-title">无需同行 · 无需同住 · 无需同游 · 纯人数凑单享低价</p>
+    <p class="tip">只要买同一个产品的人数达标，所有人自动享受更低单价！</p>
+
+    <!-- 拼团规则 -->
+    <div class="rule-big-box">
+        <div class="rule-header">拼团超级简单</div>
+        <div class="rule-steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div>自己单独购买</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div>系统自动凑人数</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div>满员自动降价</div>
+            </div>
+            <div class="step highlight">
+                <div class="step-num">4</div>
+                <div>享受最低价格</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 价格阶梯 -->
+    <div class="price-stair">
+        <div class="stair-title">拼团价格阶梯（自动降价）</div>
+        <div class="stair-grid">
+            <div class="stair">
+                <div class="p-num">1人购买</div>
+                <div class="p-price">原价</div>
+            </div>
+            <div class="stair">
+                <div class="p-num">2人拼团</div>
+                <div class="p-price">每人减50元</div>
+            </div>
+            <div class="stair">
+                <div class="p-num">3人拼团</div>
+                <div class="p-price">每人减120元</div>
+            </div>
+            <div class="stair best">
+                <div class="p-num">4人成团</div>
+                <div class="p-price">每人减200元</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 拼团产品 -->
+    <div class="card-group">
+        <div class="card">
+            <img src="29.jpg">
+            <div class="card-body">
+                <div class="card-tag">门票套餐</div>
+                <div class="card-title">上海迪士尼单日门票</div>
+                <div class="card-desc">含门票+入园服务，自己安排游玩时间，不用跟别人一起玩</div>
+                <div class="group-status">已有3人正在拼 · 差1人享最低价</div>
+                <div class="price-area">
+                    <span class="old">¥599</span>
+                    <span class="now">¥399</span>
+                </div>
+                <button class="join-btn">我要参与拼团</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="30.jpg">
+            <div class="card-body">
+                <div class="card-tag">体验套餐</div>
+                <div class="card-title">三亚游艇出海体验</div>
+                <div class="card-desc">单人出海体验，自己预约时间，无需和拼团人同行</div>
+                <div class="group-status">已有2人正在拼 · 差2人享最低价</div>
+                <div class="price-area">
+                    <span class="old">¥899</span>
+                    <span class="now">¥699</span>
+                </div>
+                <button class="join-btn">我要参与拼团</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="31.jpg">
+            <div class="card-body">
+                <div class="card-tag">酒店代金券</div>
+                <div class="card-title">全国酒店通用1晚券</div>
+                <div class="card-desc">自己订酒店、自己住，拼团只降价，不同行不同住</div>
+                <div class="group-status">已满4人 · 已享全网最低价</div>
+                <div class="price-area">
+                    <span class="old">¥499</span>
+                    <span class="now">¥299</span>
+                </div>
+                <button class="join-btn">我要参与拼团</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="32.jpg">
+            <div class="card-body">
+                <div class="card-tag">一日游</div>
+                <div class="card-title">北京故宫精讲一日游</div>
+                <div class="card-desc">含门票+讲解，自己选择出行日期，无需跟拼友同游</div>
+                <div class="group-status">已有1人正在拼 · 差3人享最低价</div>
+                <div class="price-area">
+                    <span class="old">¥399</span>
+                    <span class="now">¥199</span>
+                </div>
+                <button class="join-btn">我要参与拼团</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="33.jpg">
+            <div class="card-body">
+                <div class="card-tag">温泉体验</div>
+                <div class="card-title">南京温泉单人体验券</div>
+                <div class="card-desc">随时可用，单人出行，拼团降价，不捆绑同行</div>
+                <div class="group-status">已有4人拼团 · 已享最低价</div>
+                <div class="price-area">
+                    <span class="old">¥299</span>
+                    <span class="now">¥99</span>
+                </div>
+                <button class="join-btn">我要参与拼团</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="12.jpg">
+            <div class="card-body">
+                <div class="card-tag">旅行套餐</div>
+                <div class="card-title">云南旅游代金券500元</div>
+                <div class="card-desc">自由行、跟团均可使用，自己安排行程</div>
+                <div class="group-status">已有3人拼团 · 差1人最低价</div>
+                <div class="price-area">
+                    <span class="old">¥500</span>
+                    <span class="now">¥300</span>
+                </div>
+                <button class="join-btn">我要参与拼团</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 底部 -->
+<div class="footer">
+    <div class="logo-text">拾光旅栈 —— 创新旅游电商平台</div>
+    <div class="links">
+        <a href="#">关于我们</a>
+        <a href="#">隐私政策</a>
+        <a href="#">服务条款</a>
+        <a href="#">联系客服</a>
+        <a href="#">商家入驻</a>
+        <a href="#">旅行攻略</a>
+        <a href="#">常见问题</a>
+    </div>
+    <p>© 2026 拾光旅栈 版权所有 | 旅游经营许可证：x-xxx-xxxxxx</p>
+    <p>客服热线：xxx-xxx-xxxx | 工作时间：9:00-21:00</p>
+</div>
+
+</body>
+</html>

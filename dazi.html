@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>拾光旅栈 - 旅行找搭子</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
+    body{background:#f0f7f9;color:#33474d}
+
+    /* 导航栏：和首页一致，找搭子标为活跃 */
+    .header{
+        background:#4fb8c8;
+        padding:18px 40px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        box-shadow:0 3px 12px rgba(79,184,200,0.18);
+        position:sticky;top:0;z-index:1000
+    }
+    .logo{
+        font-size:28px;
+        font-weight:bold;
+        color:#fff;
+        cursor:pointer;
+        text-shadow:0 2px 4px rgba(0,0,0,0.1)
+    }
+    .nav{display:flex;gap:30px}
+    .nav a{
+        text-decoration:none;
+        color:#fff;
+        font-size:15px;
+        font-weight:500;
+        transition:0.3s;
+        padding:5px 0
+    }
+    .nav a:hover{color:#d5f0f5;border-bottom:2px solid #fff}
+    .nav a.active{color:#fff;border-bottom:2px solid #fff}
+
+    /* 按钮样式：和首页一致 */
+    .btn{
+        padding:11px 22px;
+        background:#38a0af;
+        color:#fff;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        transition:0.3s;
+        font-weight:500;
+        border:1px solid transparent
+    }
+    .btn:hover{background:#2c818f;transform:translateY(-2px);box-shadow:0 4px 8px rgba(56,160,175,0.2)}
+    .btn-publish{
+        background:#ff7a5f;
+        font-weight:600;
+        padding:12px 30px;
+        font-size:16px
+    }
+    .btn-publish:hover{background:#ff5a3c}
+    .btn-contact{
+        background:#e0f2f5;
+        color:#2c818f;
+        width:100%;
+        margin-top:15px
+    }
+    .btn-contact:hover{background:#4fb8c8;color:#fff}
+
+    .container{
+        max-width:1300px;
+        margin:30px auto;
+        padding:0 25px
+    }
+
+    /* 标题样式：和首页一致 */
+    .title{
+        font-size:28px;
+        margin-bottom:10px;
+        color:#2c818f;
+        font-weight:700;
+        position:relative;
+        padding-bottom:10px;
+        text-align:center;
+        margin-top:20px
+    }
+    .title::after{
+        content:'';
+        position:absolute;
+        left:50%;
+        transform:translateX(-50%);
+        bottom:0;
+        width:80px;
+        height:3px;
+        background:#4fb8c8;
+        border-radius:2px;
+        box-shadow:0 1px 3px rgba(79,184,200,0.2)
+    }
+    .sub-title{
+        font-size:18px;
+        color:#6a878e;
+        text-align:center;
+        margin-bottom:30px;
+        font-weight:normal
+    }
+
+    /* 筛选栏：精准筛选，非论坛翻找 */
+    .filter-bar{
+        background:#fff;
+        border-radius:15px;
+        padding:20px 25px;
+        box-shadow:0 4px 12px rgba(79,184,200,0.1);
+        margin-bottom:30px;
+        display:flex;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:25px
+    }
+    .filter-item{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        flex:1;
+        min-width:150px
+    }
+    .filter-label{
+        color:#2c818f;
+        font-weight:600;
+        font-size:15px
+    }
+    .filter-select{
+        padding:10px 15px;
+        border:1px solid #e0f2f5;
+        border-radius:8px;
+        background:#f8fcfd;
+        color:#33474d;
+        font-size:14px;
+        cursor:pointer;
+        transition:0.3s
+    }
+    .filter-select:focus{
+        outline:none;
+        border-color:#4fb8c8
+    }
+    .filter-input{
+        padding:10px 15px;
+        border:1px solid #e0f2f5;
+        border-radius:8px;
+        background:#f8fcfd;
+        color:#33474d;
+        font-size:14px
+    }
+    .filter-input:focus{
+        outline:none;
+        border-color:#4fb8c8
+    }
+    .filter-btn{
+        margin-left:auto;
+        white-space:nowrap
+    }
+
+    /* 搭子匹配卡片：核心信息直观展示，非论坛形式 */
+    .partner-list{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:25px;
+        margin-bottom:60px
+    }
+    .partner-card{
+        background:#fff;
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:0 5px 15px rgba(79,184,200,0.1);
+        border:1px solid #e0f2f5;
+        transition:0.3s;
+        display:flex;
+        flex-direction:column
+    }
+    .partner-card:hover{
+        transform:translateY(-6px);
+        box-shadow:0 10px 25px rgba(79,184,200,0.15);
+        border-color:#4fb8c8
+    }
+    /* 卡片头部：基础信息 */
+    .card-header{
+        padding:20px;
+        border-bottom:1px solid #f0f7f9;
+        display:flex;
+        align-items:center;
+        gap:15px
+    }
+    .user-avatar{
+        width:60px;
+        height:60px;
+        border-radius:50%;
+        background:#4fb8c8;
+        color:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:20px;
+        font-weight:bold
+    }
+    .user-basic{
+        flex:1
+    }
+    .user-name{
+        font-size:18px;
+        color:#2c818f;
+        font-weight:600;
+        margin-bottom:3px
+    }
+    .user-info{
+        font-size:14px;
+        color:#6a878e;
+        display:flex;
+        gap:15px
+    }
+
+    /* 卡片主体：旅行需求 */
+    .card-body{
+        padding:20px;
+        flex:1;
+        display:flex;
+        flex-direction:column
+    }
+    .trip-item{
+        display:flex;
+        margin-bottom:12px;
+        align-items:flex-start;
+        gap:10px
+    }
+    .trip-label{
+        width:60px;
+        color:#2c818f;
+        font-weight:500;
+        font-size:14px;
+        flex-shrink:0
+    }
+    .trip-value{
+        flex:1;
+        font-size:14px;
+        color:#33474d;
+        line-height:1.5
+    }
+    .tag-group{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-top:5px
+    }
+    .trip-tag{
+        padding:4px 10px;
+        background:#e0f2f5;
+        color:#2c818f;
+        border-radius:20px;
+        font-size:12px
+    }
+    .must-go{
+        color:#ff5a3c;
+        font-weight:600
+    }
+
+    /* 发布搭子入口 */
+    .publish-entry{
+        background:#fff;
+        border-radius:18px;
+        padding:30px;
+        box-shadow:0 5px 15px rgba(79,184,200,0.1);
+        border:1px solid #e0f2f5;
+        text-align:center;
+        margin-bottom:60px
+    }
+    .publish-entry h3{
+        font-size:20px;
+        color:#2c818f;
+        margin-bottom:15px;
+        font-weight:600
+    }
+    .publish-entry p{
+        color:#6a878e;
+        line-height:1.6;
+        margin-bottom:25px;
+        font-size:15px
+    }
+
+    /* 底部：和首页一致 */
+    .footer{
+        background:#2c818f;
+        color:#fff;
+        padding:45px 0;
+        text-align:center;
+        margin-top:30px;
+        box-shadow:0 -3px 12px rgba(79,184,200,0.18)
+    }
+    .footer .logo-text{
+        font-size:20px;
+        font-weight:700;
+        margin-bottom:15px;
+        letter-spacing:1px;
+    }
+    .footer .links{
+        display:flex;
+        justify-content:center;
+        gap:25px;
+        margin:15px 0 20px;
+        flex-wrap:wrap
+    }
+    .footer a{
+        color:#d5f0f5;
+        text-decoration:none;
+        font-size:15px;
+        transition:0.3s;
+        padding:3px 0;
+    }
+    .footer a:hover{color:#fff;text-decoration:underline}
+    .footer p{
+        font-size:14px;
+        color:#e0f2f5;
+        margin:5px 0;
+        line-height:1.6;
+    }
+
+    /* 响应式：适配小屏幕 */
+    @media (max-width:992px) {
+        .partner-list{grid-template-columns:repeat(2,1fr)}
+        .filter-bar{gap:15px}
+    }
+    @media (max-width:576px) {
+        .header{padding:15px 20px}
+        .nav{gap:15px}
+        .nav a{font-size:14px}
+        .partner-list{grid-template-columns:1fr}
+        .filter-item{min-width:100%}
+        .filter-btn{margin-left:0;margin-top:10px;width:100%}
+    }
+</style>
+</head>
+<body>
+
+<!-- 导航栏：和首页一致，找搭子标为活跃 -->
+<div class="header">
+    <div class="logo">拾光旅栈</div>
+    <div class="nav">
+        <a href="index.html">首页</a>
+        <a href="manghe.html">酒店盲盒</a>
+        <a href="zhuanshou.html">转售市场</a>
+        <a href="dazi.html" class="active">找搭子</a>
+        <a href="dingzhi.html">旅行定制</a>
+        <a href="jijiu.html">机酒预订</a>
+        <a href="kuajing.html">随行邮物</a>
+        <a href="pintuan.html">多人拼团</a>
+    </div>
+    <button class="btn">登录/注册</button>
+</div>
+
+<div class="container">
+    <!-- 页面主标题 -->
+    <h1 class="title">旅行找搭子 · 结伴同行更有趣</h1>
+    <p class="sub-title">填写旅行需求，匹配志同道合的伙伴；或发布你的行程，等待他人加入～ 平台实名认证，出行更安心</p>
+
+    <!-- 发布搭子入口 -->
+    <div class="publish-entry">
+        <h3>想找旅行伙伴？发布你的行程需求！</h3>
+        <p>填写目的地、预算、出行时间和必去景点，系统自动匹配兴趣相投的搭子，告别独自旅行的孤单～</p>
+        <button class="btn btn-publish" onclick="showPublishModal()">发布搭子需求</button>
+    </div>
+
+    <!-- 筛选栏：精准匹配，不用翻论坛 -->
+    <div class="filter-bar">
+        <div class="filter-item">
+            <span class="filter-label">目的地</span>
+            <select class="filter-select">
+                <option value="all">全部目的地</option>
+                <option value="sanya">三亚</option>
+                <option value="lijiang">丽江</option>
+                <option value="chengdu">成都</option>
+                <option value="xiamen">厦门</option>
+                <option value="qingdao">青岛</option>
+                <option value="guilin">桂林</option>
+                <option value="xian">西安</option>
+                <option value="hangzhou">杭州</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <span class="filter-label">预算范围（元）</span>
+            <select class="filter-select">
+                <option value="all">不限预算</option>
+                <option value="1000-2000">1000-2000</option>
+                <option value="2000-3000">2000-3000</option>
+                <option value="3000-5000">3000-5000</option>
+                <option value="5000+">5000以上</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <span class="filter-label">出行时间</span>
+            <input type="text" class="filter-input" placeholder="例如：2026-05-10至2026-05-15">
+        </div>
+        <div class="filter-item">
+            <span class="filter-label">性别要求</span>
+            <select class="filter-select">
+                <option value="all">不限性别</option>
+                <option value="male">男</option>
+                <option value="female">女</option>
+            </select>
+        </div>
+        <button class="btn filter-btn">立即匹配</button>
+    </div>
+
+    <!-- 搭子匹配卡片列表：非论坛形式 -->
+    <div class="partner-list">
+        <!-- 搭子1 -->
+        <div class="partner-card">
+            <div class="card-header">
+                <div class="user-avatar">李</div>
+                <div class="user-basic">
+                    <div class="user-name">小李同学</div>
+                    <div class="user-info">
+                        <span>女 · 23岁</span>
+                        <span>上海出发</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="trip-item">
+                    <span class="trip-label">目的地</span>
+                    <span class="trip-value">三亚</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">出行时间</span>
+                    <span class="trip-value">2026-05-20 至 2026-05-25（5天4晚）</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">预算</span>
+                    <span class="trip-value">3000-4000元/人</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">必去景点</span>
+                    <span class="trip-value must-go">蜈支洲岛、亚龙湾潜水、天涯海角</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">兴趣标签</span>
+                    <span class="trip-value">
+                        <div class="tag-group">
+                            <span class="trip-tag">拍照打卡</span>
+                            <span class="trip-tag">美食探店</span>
+                            <span class="trip-tag">自由行</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">备注</span>
+                    <span class="trip-value">性格随和，会拍照，希望找女生搭子，一起拼房分摊费用～</span>
+                </div>
+                <button class="btn btn-contact">联系搭子</button>
+            </div>
+        </div>
+
+        <!-- 搭子2 -->
+        <div class="partner-card">
+            <div class="card-header">
+                <div class="user-avatar">张</div>
+                <div class="user-basic">
+                    <div class="user-name">小张同学</div>
+                    <div class="user-info">
+                        <span>男 · 25岁</span>
+                        <span>北京出发</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="trip-item">
+                    <span class="trip-label">目的地</span>
+                    <span class="trip-value">丽江+大理</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">出行时间</span>
+                    <span class="trip-value">2026-06-01 至 2026-06-07（7天6晚）</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">预算</span>
+                    <span class="trip-value">4000-5000元/人</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">必去景点</span>
+                    <span class="trip-value must-go">玉龙雪山、洱海骑行、大理古城</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">兴趣标签</span>
+                    <span class="trip-value">
+                        <div class="tag-group">
+                            <span class="trip-tag">人文风光</span>
+                            <span class="trip-tag">徒步</span>
+                            <span class="trip-tag">无辣不欢</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">备注</span>
+                    <span class="trip-value">喜欢摄影，有驾照可租车，希望找1-2个性格开朗的搭子，一起探索小众路线～</span>
+                </div>
+                <button class="btn btn-contact">联系搭子</button>
+            </div>
+        </div>
+
+        <!-- 搭子3 -->
+        <div class="partner-card">
+            <div class="card-header">
+                <div class="user-avatar">王</div>
+                <div class="user-basic">
+                    <div class="user-name">小王同学</div>
+                    <div class="user-info">
+                        <span>女 · 22岁</span>
+                        <span>广州出发</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="trip-item">
+                    <span class="trip-label">目的地</span>
+                    <span class="trip-value">成都+重庆</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">出行时间</span>
+                    <span class="trip-value">2026-05-15 至 2026-05-20（6天5晚）</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">预算</span>
+                    <span class="trip-value">2500-3500元/人</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">必去景点</span>
+                    <span class="trip-value must-go">大熊猫基地、洪崖洞、解放碑</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">兴趣标签</span>
+                    <span class="trip-value">
+                        <div class="tag-group">
+                            <span class="trip-tag">美食探店</span>
+                            <span class="trip-tag">追剧搭子</span>
+                            <span class="trip-tag">慢旅行</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">备注</span>
+                    <span class="trip-value">吃货一枚，主打美食之旅，希望找女生搭子，一起吃遍川渝美食，不赶行程～</span>
+                </div>
+                <button class="btn btn-contact">联系搭子</button>
+            </div>
+        </div>
+
+        <!-- 搭子4 -->
+        <div class="partner-card">
+            <div class="card-header">
+                <div class="user-avatar">刘</div>
+                <div class="user-basic">
+                    <div class="user-name">小刘同学</div>
+                    <div class="user-info">
+                        <span>男 · 26岁</span>
+                        <span>深圳出发</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="trip-item">
+                    <span class="trip-label">目的地</span>
+                    <span class="trip-value">厦门</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">出行时间</span>
+                    <span class="trip-value">2026-05-28 至 2026-06-01（5天4晚）</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">预算</span>
+                    <span class="trip-value">3000-4000元/人</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">必去景点</span>
+                    <span class="trip-value must-go">鼓浪屿、曾厝垵、南普陀寺</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">兴趣标签</span>
+                    <span class="trip-value">
+                        <div class="tag-group">
+                            <span class="trip-tag">海边散步</span>
+                            <span class="trip-tag">咖啡探店</span>
+                            <span class="trip-tag">摄影</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">备注</span>
+                    <span class="trip-value">自由职业时间灵活，可调整出行日期，希望找1-3个搭子，一起拍海边大片～</span>
+                </div>
+                <button class="btn btn-contact">联系搭子</button>
+            </div>
+        </div>
+
+        <!-- 搭子5 -->
+        <div class="partner-card">
+            <div class="card-header">
+                <div class="user-avatar">陈</div>
+                <div class="user-basic">
+                    <div class="user-name">小陈同学</div>
+                    <div class="user-info">
+                        <span>女 · 24岁</span>
+                        <span>杭州出发</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="trip-item">
+                    <span class="trip-label">目的地</span>
+                    <span class="trip-value">西安</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">出行时间</span>
+                    <span class="trip-value">2026-06-10 至 2026-06-14（5天4晚）</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">预算</span>
+                    <span class="trip-value">2000-3000元/人</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">必去景点</span>
+                    <span class="trip-value must-go">兵马俑、大唐不夜城、西安城墙</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">兴趣标签</span>
+                    <span class="trip-value">
+                        <div class="tag-group">
+                            <span class="trip-tag">历史文化</span>
+                            <span class="trip-tag">汉服打卡</span>
+                            <span class="trip-tag">美食探索</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">备注</span>
+                    <span class="trip-value">喜欢历史，已准备汉服，希望找同样喜欢传统文化的搭子，一起沉浸式体验古都～</span>
+                </div>
+                <button class="btn btn-contact">联系搭子</button>
+            </div>
+        </div>
+
+        <!-- 搭子6 -->
+        <div class="partner-card">
+            <div class="card-header">
+                <div class="user-avatar">周</div>
+                <div class="user-basic">
+                    <div class="user-name">小周同学</div>
+                    <div class="user-info">
+                        <span>男 · 27岁</span>
+                        <span>成都出发</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="trip-item">
+                    <span class="trip-label">目的地</span>
+                    <span class="trip-value">桂林+阳朔</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">出行时间</span>
+                    <span class="trip-value">2026-05-12 至 2026-05-17（6天5晚）</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">预算</span>
+                    <span class="trip-value">3500-4500元/人</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">必去景点</span>
+                    <span class="trip-value must-go">漓江竹筏、遇龙河、十里画廊</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">兴趣标签</span>
+                    <span class="trip-value">
+                        <div class="tag-group">
+                            <span class="trip-tag">山水风光</span>
+                            <span class="trip-tag">徒步</span>
+                            <span class="trip-tag">露营</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">备注</span>
+                    <span class="trip-value">户外爱好者，有露营装备，希望找喜欢自然的搭子，一起体验小众露营地～</span>
+                </div>
+                <button class="btn btn-contact">联系搭子</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 底部：和首页一致 -->
+<div class="footer">
+    <div class="logo-text">拾光旅栈 —— 创新旅游电商平台</div>
+    <div class="links">
+        <a href="#">关于我们</a>
+        <a href="#">隐私政策</a>
+        <a href="#">服务条款</a>
+        <a href="#">联系客服</a>
+        <a href="#">商家入驻</a>
+        <a href="#">旅行攻略</a>
+        <a href="#">常见问题</a>
+    </div>
+    <p>© 2026 拾光旅栈 版权所有 | 旅游经营许可证：x-xxx-xxxxxx</p>
+    <p>客服热线：xxx-xxx-xxxx | 工作时间：9:00-21:00</p>
+</div>
+
+<!-- 发布搭子需求弹窗（模拟） -->
+<script>
+function showPublishModal() {
+    alert(`
+    发布搭子需求需填写以下信息：
+    1. 个人基础信息：性别、年龄、出发地
+    2. 旅行需求：目的地、出行时间、预算范围
+    3. 必去景点：列出必须打卡的景点
+    4. 兴趣标签：选择你的旅行兴趣（如拍照、美食、徒步等）
+    5. 备注：其他需求（如性别要求、拼房意愿等）
+    
+    提交后系统将自动匹配符合条件的搭子，同时你的需求也会展示在列表中～
+    `);
+}
+
+// 联系搭子弹窗（模拟）
+document.querySelectorAll('.btn-contact').forEach(btn => {
+    btn.onclick = function() {
+        const userName = this.closest('.partner-card').querySelector('.user-name').textContent;
+        alert(`已成功联系 ${userName}！可在消息中心查看回复，沟通出行细节～`);
+    }
+});
+</script>
+
+</body>
+</html>
